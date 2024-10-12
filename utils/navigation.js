@@ -56,7 +56,15 @@ export async function lsDir() {
     );
   }
 
-  const statArr = await Promise.all(filePromiseArr);
+  const statArr = (await Promise.allSettled(filePromiseArr)).reduce(
+    (acc, curVal) => {
+      if (curVal.status === "fulfilled") {
+        acc.push(curVal.value);
+      }
+      return acc;
+    },
+    []
+  );
 
   statArr.forEach((stat, index) => {
     const tableFile = new File(
