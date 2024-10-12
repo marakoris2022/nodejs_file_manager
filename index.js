@@ -5,13 +5,13 @@ import path from "node:path";
 import { getUserName } from "./utils/getUserName.js";
 import { logWithColor } from "./utils/logWithColor.js";
 import { GLOBAL_CONSTANTS } from "./constants/global.js";
-import { upDir } from "./utils/upDir.js";
+import { upDir, cdDir, lsDir } from "./utils/navigation.js";
 
 GLOBAL_CONSTANTS.USER_NAME = getUserName();
 GLOBAL_CONSTANTS.CURRENT_PATH = path.resolve(os.homedir());
 
 process.on("exit", () =>
-  logWithColor.red(
+  logWithColor.blue(
     `Thank you for using File Manager, ${GLOBAL_CONSTANTS.USER_NAME}, goodbye!`
   )
 );
@@ -20,34 +20,33 @@ logWithColor.blue(
   `Welcome to the File Manager, ${GLOBAL_CONSTANTS.USER_NAME}!`
 );
 
-function reRun(rl) {
-  rl.close();
-  run();
+const rl = readline.createInterface({ input, output });
+
+async function handleInput(answer) {
+  try {
+    if (answer === ".exit") process.exit();
+
+    if (answer === "up") {
+      upDir();
+    } else if (answer.startsWith("cd")) {
+      await cdDir(answer);
+    } else if (answer === "ls") {
+      await lsDir();
+    } else {
+      logWithColor.red("Invalid input");
+    }
+  } catch (error) {
+    console.error("Operation failed");
+    logWithColor.gray(`Additional error info: ${error.message}`);
+  }
+  prompt();
 }
 
-function run() {
-  const rl = readline.createInterface({ input, output });
+function prompt() {
   rl.question(
     `You are currently in ${GLOBAL_CONSTANTS.CURRENT_PATH} `,
-    (answer) => {
-      if (answer === ".exit") process.exit();
-
-      if (answer === "test") {
-        logWithColor.green("This is test!");
-        reRun(rl);
-        return;
-      }
-
-      if (answer === "up") {
-        upDir();
-        reRun(rl);
-        return;
-      }
-
-      logWithColor.red("Invalid input");
-      reRun(rl);
-    }
+    handleInput
   );
 }
 
-run();
+prompt();
