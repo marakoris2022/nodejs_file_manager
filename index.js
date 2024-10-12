@@ -2,10 +2,11 @@ import readline from "node:readline";
 import { stdin as input, stdout as output } from "node:process";
 import os from "node:os";
 import path from "node:path";
-import { getUserName } from "./utils/getUserName.js";
-import { logWithColor } from "./utils/logWithColor.js";
+import { getUserName } from "./utils/utils.js";
+import { logWithColor } from "./utils/utils.js";
 import { GLOBAL_CONSTANTS } from "./constants/global.js";
 import { upDir, cdDir, lsDir } from "./utils/navigation.js";
+import { createNewFileAdd, readFileCat } from "./utils/operations.js";
 
 GLOBAL_CONSTANTS.USER_NAME = getUserName();
 GLOBAL_CONSTANTS.CURRENT_PATH = path.resolve(os.homedir());
@@ -32,6 +33,10 @@ async function handleInput(answer) {
       await cdDir(answer);
     } else if (answer === "ls") {
       await lsDir();
+    } else if (answer.startsWith("cat")) {
+      await readFileCat(answer);
+    } else if (answer.startsWith("add")) {
+      await createNewFileAdd(answer);
     } else {
       logWithColor.red("Invalid input");
     }
