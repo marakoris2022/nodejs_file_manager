@@ -6,7 +6,12 @@ import { getUserName } from "./utils/utils.js";
 import { logWithColor } from "./utils/utils.js";
 import { GLOBAL_CONSTANTS } from "./constants/global.js";
 import { upDir, cdDir, lsDir } from "./utils/navigation.js";
-import { createNewFileAdd, readFileCat } from "./utils/operations.js";
+import {
+  copyFileCP,
+  createNewFileAdd,
+  readFileCat,
+  renameFileRn,
+} from "./utils/operations.js";
 
 GLOBAL_CONSTANTS.USER_NAME = getUserName();
 GLOBAL_CONSTANTS.CURRENT_PATH = path.resolve(os.homedir());
@@ -37,6 +42,10 @@ async function handleInput(answer) {
       await readFileCat(answer);
     } else if (answer.startsWith("add")) {
       await createNewFileAdd(answer);
+    } else if (answer.startsWith("rn")) {
+      await renameFileRn(answer);
+    } else if (answer.startsWith("cp")) {
+      await copyFileCP(answer);
     } else {
       logWithColor.red("Invalid input");
     }
