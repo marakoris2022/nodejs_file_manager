@@ -5,7 +5,7 @@ import path from "node:path";
 import { getUserName } from "./utils/utils.js";
 import { logWithColor } from "./utils/utils.js";
 import { GLOBAL_CONSTANTS } from "./constants/global.js";
-import { upDir, cdDir, lsDir } from "./utils/navigation.js";
+import { upDir, cdDir, lsDir } from "./commands/navigation.js";
 import {
   copyFileCP,
   createNewFileAdd,
@@ -13,7 +13,9 @@ import {
   readFileCat,
   removeFileRM,
   renameFileRn,
-} from "./utils/operations.js";
+} from "./commands/operations.js";
+import { getEOL } from "./commands/OSInfo.js";
+import { info } from "./commands/other.js";
 
 GLOBAL_CONSTANTS.USER_NAME = getUserName();
 GLOBAL_CONSTANTS.CURRENT_PATH = path.resolve(os.homedir());
@@ -27,6 +29,7 @@ process.on("exit", () =>
 logWithColor.blue(
   `Welcome to the File Manager, ${GLOBAL_CONSTANTS.USER_NAME}!`
 );
+logWithColor.yellow("Use .info command to get command list.");
 
 const rl = readline.createInterface({ input, output });
 
@@ -36,6 +39,8 @@ async function handleInput(answer) {
 
     if (answer === "up") {
       upDir();
+    } else if (answer === ".info") {
+      info();
     } else if (answer.startsWith("cd")) {
       await cdDir(answer);
     } else if (answer === "ls") {
@@ -52,6 +57,8 @@ async function handleInput(answer) {
       await moveFileMV(answer);
     } else if (answer.startsWith("cp")) {
       await copyFileCP(answer);
+    } else if (answer.startsWith("os")) {
+      getEOL(answer);
     } else {
       logWithColor.red("Invalid input");
     }

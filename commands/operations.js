@@ -2,7 +2,7 @@ import { GLOBAL_CONSTANTS } from "../constants/global.js";
 import fs from "node:fs";
 import { appendFile, rename, rm } from "node:fs/promises";
 import { join, dirname, parse } from "node:path";
-import { logWithColor } from "./utils.js";
+import { logWithColor } from "../utils/utils.js";
 
 export async function readFileCat(filePath) {
   return new Promise((res, rej) => {
