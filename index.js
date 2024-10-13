@@ -16,6 +16,7 @@ import {
 } from "./commands/operations.js";
 import { getEOL } from "./commands/OSInfo.js";
 import { info } from "./commands/other.js";
+import { calculateHash } from "./commands/hash.js";
 
 GLOBAL_CONSTANTS.USER_NAME = getUserName();
 GLOBAL_CONSTANTS.CURRENT_PATH = path.resolve(os.homedir());
@@ -59,6 +60,8 @@ async function handleInput(answer) {
       await copyFileCP(answer);
     } else if (answer.startsWith("os")) {
       getEOL(answer);
+    } else if (answer.startsWith("hash")) {
+      await calculateHash(answer);
     } else {
       logWithColor.red("Invalid input");
     }
