@@ -1,6 +1,6 @@
 import { GLOBAL_CONSTANTS } from "../constants/global.js";
 import fs from "node:fs";
-import { appendFile, rename } from "node:fs/promises";
+import { appendFile, rename, rm } from "node:fs/promises";
 import { join, dirname, parse } from "node:path";
 import { logWithColor } from "./utils.js";
 
@@ -75,7 +75,7 @@ export async function copyFileCP(pathString) {
       filePathChecked = join(GLOBAL_CONSTANTS.CURRENT_PATH, filePath);
       nameOfFile = parse(filePathChecked).base;
     } else {
-      rej("Source file does not exist.");
+      rej(new Error("Source file does not exist."));
       return;
     }
 
@@ -101,7 +101,41 @@ export async function copyFileCP(pathString) {
 
     writeableStream.on("finish", () => {
       logWithColor.green("Copy is finished.");
-      res();
+      res(nameOfFile);
     });
   });
+}
+
+export async function removeFileRM(pathString) {
+  const splitPathString = pathString.split(" ");
+  const filePath = splitPathString[1];
+
+  let filePathChecked;
+
+  if (fs.existsSync(filePath)) {
+    filePathChecked = filePath;
+  } else if (fs.existsSync(join(GLOBAL_CONSTANTS.CURRENT_PATH, filePath))) {
+    filePathChecked = join(GLOBAL_CONSTANTS.CURRENT_PATH, filePath);
+  }
+
+  if (!filePathChecked) {
+    rej(new Error("Can't get Path"));
+    return;
+  }
+
+  const fileName = parse(filePath).base;
+  await rm(filePathChecked);
+  logWithColor.magenta(`${fileName} - deleted.`);
+}
+
+export async function moveFileMV(pathString) {
+  try {
+    const isCopied = await copyFileCP(pathString);
+
+    if (isCopied) {
+      await removeFileRM(pathString);
+    }
+  } catch (e) {
+    throw Error(e.message);
+  }
 }

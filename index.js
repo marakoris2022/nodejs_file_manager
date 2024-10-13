@@ -9,7 +9,9 @@ import { upDir, cdDir, lsDir } from "./utils/navigation.js";
 import {
   copyFileCP,
   createNewFileAdd,
+  moveFileMV,
   readFileCat,
+  removeFileRM,
   renameFileRn,
 } from "./utils/operations.js";
 
@@ -44,6 +46,10 @@ async function handleInput(answer) {
       await createNewFileAdd(answer);
     } else if (answer.startsWith("rn")) {
       await renameFileRn(answer);
+    } else if (answer.startsWith("rm")) {
+      await removeFileRM(answer);
+    } else if (answer.startsWith("mv")) {
+      await moveFileMV(answer);
     } else if (answer.startsWith("cp")) {
       await copyFileCP(answer);
     } else {
