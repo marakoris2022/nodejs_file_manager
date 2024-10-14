@@ -17,6 +17,7 @@ import {
 import { getEOL } from "./commands/OSInfo.js";
 import { info } from "./commands/other.js";
 import { calculateHash } from "./commands/hash.js";
+import { compressFile, uncompressFile } from "./commands/brotli.js";
 
 GLOBAL_CONSTANTS.USER_NAME = getUserName();
 GLOBAL_CONSTANTS.CURRENT_PATH = path.resolve(os.homedir());
@@ -61,7 +62,11 @@ async function handleInput(answer) {
     } else if (answer.startsWith("os")) {
       getEOL(answer);
     } else if (answer.startsWith("hash")) {
-      await calculateHash(answer);
+      await compressFile(answer);
+    } else if (answer.startsWith("compress")) {
+      await compressFile(answer);
+    } else if (answer.startsWith("decompress")) {
+      await uncompressFile(answer);
     } else {
       logWithColor.red("Invalid input");
     }
